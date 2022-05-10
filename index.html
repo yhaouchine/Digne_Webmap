@@ -52,7 +52,7 @@
         }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[44.25007353502119,6.24539245380044],[44.28147362643567,6.29919617788523]]);
+        }).fitBounds([[44.254064182090595,6.25671679000176],[44.26976422779783,6.283618652044155]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -105,7 +105,7 @@
                     </tr>\
                     <tr>\
                         <th scope="row">Lien vers le modèle 3D</th>\
-                        <td>' + (feature.properties['URL'] !== null ? autolinker.link(feature.properties['URL'].toLocaleString()) : '') + '</td>\
+                        <td>' + (feature.properties['URL'] !== null ? '<img src="images/' + String(feature.properties['URL']).replace(/[\\\/:]/g, '_').trim() + '">' : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
