@@ -11,15 +11,22 @@
         <link rel="stylesheet" href="css/MarkerCluster.css">
         <link rel="stylesheet" href="css/MarkerCluster.Default.css">
         <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
         <style>
-        #map {
-            width: 1539px;
-            height: 899px;
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
         }
         </style>
-        <title></title>
+        <title>Webmap Dignes-les-bains</title>
     </head>
     <body>
+        <section><font face="arial"> <p align="center"><h1> <p align="center">Carte interactive de la région de Digne-les-bains</p></h1></font></section>
+        
+        <section><font face="arial"><p>Vous pouvez</p></font></section>
+      <hr>
         <div id="map">
         </div>
         <script src="js/qgis2web_expressions.js"></script>
@@ -31,9 +38,12 @@
         <script src="js/rbush.min.js"></script>
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
+        <script src="js/leaflet-tilelayer-wmts.js"></script>
         <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
         <script src="js/leaflet.markercluster.js"></script>
-        <script src="data/Modles3Ddesaffleurements2022_1.js"></script>
+        <script src="data/modle_drone_lambert_3.js"></script>
+        <script src="data/modle_3D_lambert_4.js"></script>
         <script>
         var highlightLayer;
         function highlightFeature(e) {
@@ -52,11 +62,23 @@
         }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[44.254064182090595,6.25671679000176],[44.26976422779783,6.283618652044155]]);
+        }).fitBounds([[44.05382652658232,5.929761273575364],[44.40745470898342,6.735027471529595]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
@@ -73,7 +95,37 @@
         });
         layer_OSMStandard_0;
         map.addLayer(layer_OSMStandard_0);
-        function pop_Modles3Ddesaffleurements2022_1(feature, layer) {
+        map.createPane('pane_Photographiesariennes_1');
+        map.getPane('pane_Photographiesariennes_1').style.zIndex = 401;
+        var layer_Photographiesariennes_1 = L.tileLayer.wmts('https://wxs.ign.fr/decouverte/geoportail/wmts', {
+            pane: 'pane_Photographiesariennes_1',
+            layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+            tilematrixSet: 'PM',
+            format: 'image/jpeg',
+            style: 'normal',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            opacity: 1.0,
+            attribution: '',
+        });
+        map.addLayer(layer_Photographiesariennes_1);
+        map.createPane('pane_PlanIGNv2_2');
+        map.getPane('pane_PlanIGNv2_2').style.zIndex = 402;
+        var layer_PlanIGNv2_2 = L.tileLayer.wmts('https://wxs.ign.fr/decouverte/geoportail/wmts', {
+            pane: 'pane_PlanIGNv2_2',
+            layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
+            tilematrixSet: 'PM',
+            format: 'image/png',
+            style: 'normal',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            opacity: 1.0,
+            attribution: '',
+        });
+        map.addLayer(layer_PlanIGNv2_2);
+        function pop_modle_drone_lambert_3(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (i in e.target._eventParents) {
@@ -84,12 +136,77 @@
             });
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">Nom</th>\
+                        <th scope="row">Name</th>\
                         <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Description de l\'affleurement</th>\
-                        <td>' + (feature.properties['Descript°'] !== null ? autolinker.link(feature.properties['Descript°'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">descriptio</th>\
+                        <td>' + (feature.properties['descriptio'] !== null ? autolinker.link(feature.properties['descriptio'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Formation</th>\
+                        <td>' + (feature.properties['Formation'] !== null ? autolinker.link(feature.properties['Formation'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['path'] !== null ? autolinker.link(feature.properties['path'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nom</th>\
+                        <td>' + (feature.properties['Nom'] !== null ? autolinker.link(feature.properties['Nom'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">URL</th>\
+                        <td>' + (feature.properties['URL'] !== null ? autolinker.link(feature.properties['URL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_modle_drone_lambert_3_0() {
+            return {
+                pane: 'pane_modle_drone_lambert_3',
+                opacity: 1,
+                color: 'rgba(247,247,247,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,114,220,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_modle_drone_lambert_3');
+        map.getPane('pane_modle_drone_lambert_3').style.zIndex = 403;
+        map.getPane('pane_modle_drone_lambert_3').style['mix-blend-mode'] = 'normal';
+        var layer_modle_drone_lambert_3 = new L.geoJson(json_modle_drone_lambert_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_modle_drone_lambert_3',
+            layerName: 'layer_modle_drone_lambert_3',
+            pane: 'pane_modle_drone_lambert_3',
+            onEachFeature: pop_modle_drone_lambert_3,
+            style: style_modle_drone_lambert_3_0,
+        });
+        bounds_group.addLayer(layer_modle_drone_lambert_3);
+        map.addLayer(layer_modle_drone_lambert_3);
+        function pop_modle_3D_lambert_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DescriptÂ°'] !== null ? autolinker.link(feature.properties['DescriptÂ°'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Longitude</th>\
@@ -100,20 +217,20 @@
                         <td>' + (feature.properties['Latitude'] !== null ? autolinker.link(feature.properties['Latitude'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Numéro de formation</th>\
+                        <th scope="row">Formation</th>\
                         <td>' + (feature.properties['Formation'] !== null ? autolinker.link(feature.properties['Formation'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Lien vers le modèle 3D</th>\
-                        <td>' + (feature.properties['URL'] !== null ? '<img src="images/' + String(feature.properties['URL']).replace(/[\\\/:]/g, '_').trim() + '">' : '') + '</td>\
+                        <th scope="row">URL</th>\
+                        <td>' + (feature.properties['URL'] !== null ? autolinker.link(feature.properties['URL'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_Modles3Ddesaffleurements2022_1_0() {
+        function style_modle_3D_lambert_4_0() {
             return {
-                pane: 'pane_Modles3Ddesaffleurements2022_1',
+                pane: 'pane_modle_3D_lambert_4',
                 radius: 4.0,
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
@@ -123,34 +240,34 @@
                 weight: 1,
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(243,166,178,1.0)',
+                fillColor: 'rgba(196,60,57,1.0)',
                 interactive: true,
             }
         }
-        map.createPane('pane_Modles3Ddesaffleurements2022_1');
-        map.getPane('pane_Modles3Ddesaffleurements2022_1').style.zIndex = 401;
-        map.getPane('pane_Modles3Ddesaffleurements2022_1').style['mix-blend-mode'] = 'normal';
-        var layer_Modles3Ddesaffleurements2022_1 = new L.geoJson(json_Modles3Ddesaffleurements2022_1, {
+        map.createPane('pane_modle_3D_lambert_4');
+        map.getPane('pane_modle_3D_lambert_4').style.zIndex = 404;
+        map.getPane('pane_modle_3D_lambert_4').style['mix-blend-mode'] = 'normal';
+        var layer_modle_3D_lambert_4 = new L.geoJson(json_modle_3D_lambert_4, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_Modles3Ddesaffleurements2022_1',
-            layerName: 'layer_Modles3Ddesaffleurements2022_1',
-            pane: 'pane_Modles3Ddesaffleurements2022_1',
-            onEachFeature: pop_Modles3Ddesaffleurements2022_1,
+            dataVar: 'json_modle_3D_lambert_4',
+            layerName: 'layer_modle_3D_lambert_4',
+            pane: 'pane_modle_3D_lambert_4',
+            onEachFeature: pop_modle_3D_lambert_4,
             pointToLayer: function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.circleMarker(latlng, style_Modles3Ddesaffleurements2022_1_0(feature));
+                return L.circleMarker(latlng, style_modle_3D_lambert_4_0(feature));
             },
         });
-        var cluster_Modles3Ddesaffleurements2022_1 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+        var cluster_modle_3D_lambert_4 = new L.MarkerClusterGroup({showCoverageOnHover: false,
             spiderfyDistanceMultiplier: 2});
-        cluster_Modles3Ddesaffleurements2022_1.addLayer(layer_Modles3Ddesaffleurements2022_1);
+        cluster_modle_3D_lambert_4.addLayer(layer_modle_3D_lambert_4);
 
-        bounds_group.addLayer(layer_Modles3Ddesaffleurements2022_1);
-        cluster_Modles3Ddesaffleurements2022_1.addTo(map);
+        bounds_group.addLayer(layer_modle_3D_lambert_4);
+        cluster_modle_3D_lambert_4.addTo(map);
         var osmGeocoder = new L.Control.Geocoder({
             collapsed: true,
             position: 'topleft',
@@ -162,7 +279,7 @@
         document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
         .title += 'Search for a place';
         var baseMaps = {};
-        L.control.layers(baseMaps,{'<img src="legend/Modles3Ddesaffleurements2022_1.png" /> Modèles 3D des affleurements 2022': cluster_Modles3Ddesaffleurements2022_1,"OSM Standard": layer_OSMStandard_0,}).addTo(map);
+        L.control.layers(baseMaps,{'<img src="legend/modle_3D_lambert_4.png" /> modèle_3D_lambert': cluster_modle_3D_lambert_4,'<img src="legend/modle_drone_lambert_3.png" /> modèle_drone_lambert': layer_modle_drone_lambert_3,"Plan IGN v2": layer_PlanIGNv2_2,"Photographies aériennes": layer_Photographiesariennes_1,"OSM Standard": layer_OSMStandard_0,}).addTo(map);
         setBounds();
         </script>
     </body>
