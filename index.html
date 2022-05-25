@@ -20,12 +20,26 @@
             margin: 0;
         }
         </style>
-        <title>Webmap Dignes-les-bains</title>
+        <title></title>
     </head>
     <body>
-        <section><font face="arial"> <p align="center"><h1> <p align="center">Carte interactive de la région de Digne-les-bains</p></h1></font></section>
-        
-        <section><font face="arial"><p>Vous pouvez</p></font></section>
+	<section>
+            <font face="arial">
+                <h1>
+                    <p align="center">
+                        Carte interactive de la région de Digne-les-bains
+                    </p>
+                </h1>
+            </font>
+        </section>
+        <section>
+            <font face="arial">
+                <p>
+                    Les zones en bleu correspondent aux structures scannées par le drone, les points rouges sont les affleurements photographiés en utilisant un LiDAR ou un smartphone. 
+                    En cliquant sur un point ou une zone, une pop-up s'ouvre avec un lien vers le modèle 3D de l'affleurement
+                </p>
+            </font>
+        </section>
       <hr>
         <div id="map">
         </div>
@@ -62,7 +76,7 @@
         }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[44.05382652658232,5.929761273575364],[44.40745470898342,6.735027471529595]]);
+        }).fitBounds([[44.04134759270658,6.0436780031250725],[44.42062335940323,6.620697142915475]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -136,11 +150,11 @@
             });
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">Name</th>\
+                        <th scope="row">ID</th>\
                         <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">descriptio</th>\
+                        <th scope="row">description</th>\
                         <td>' + (feature.properties['descriptio'] !== null ? autolinker.link(feature.properties['descriptio'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -148,14 +162,11 @@
                         <td>' + (feature.properties['Formation'] !== null ? autolinker.link(feature.properties['Formation'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['path'] !== null ? autolinker.link(feature.properties['path'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
                         <th scope="row">Nom</th>\
                         <td>' + (feature.properties['Nom'] !== null ? autolinker.link(feature.properties['Nom'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">URL</th>\
+                        <th scope="row">lien vers le modèle</th>\
                         <td>' + (feature.properties['URL'] !== null ? autolinker.link(feature.properties['URL'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
@@ -173,7 +184,7 @@
                 weight: 1.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(0,114,220,1.0)',
+                fillColor: 'rgba(0,114,220,0.6)',
                 interactive: true,
             }
         }
@@ -202,11 +213,12 @@
             });
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">Name</th>\
+                        <th scope="row">Nom</th>\
                         <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['DescriptÂ°'] !== null ? autolinker.link(feature.properties['DescriptÂ°'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Description</th>\
+                        <td>' + (feature.properties['DescriptÂ°'] !== null ? autolinker.link(feature.properties['DescriptÂ°'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Longitude</th>\
@@ -221,7 +233,7 @@
                         <td>' + (feature.properties['Formation'] !== null ? autolinker.link(feature.properties['Formation'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">URL</th>\
+                        <th scope="row">Lien vers le modèle</th>\
                         <td>' + (feature.properties['URL'] !== null ? autolinker.link(feature.properties['URL'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
